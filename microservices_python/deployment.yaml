@@ -1,0 +1,46 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "python-deployment"
+  namespace: "default"
+  labels:
+    app: "python-deployment"
+spec:
+  replicas: 1
+  selector:
+    matchlabels:
+      app: "python-deployment"
+  template:
+    metadata:
+      labels:
+        app: "python-deployment"
+    spec:
+      containers:
+        - image: "gcr.io/pathpresenterresearch/python-docker:latest"
+          imagePullPolicy: Always
+          name: "python-docker-container"
+          ports:
+            - containerPort: 5000
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "python-deployment-hpa"
+  namespace: "default"
+  labels:
+    app: "python-deployment"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "python-deployment"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      target:
+        type: "Utilization"
+        averageUtilization: 80

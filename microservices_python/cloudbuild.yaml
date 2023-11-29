@@ -1,0 +1,11 @@
+steps:
+  # build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/pathpresenterresearch/python-docker', 'microservices_python/.']
+  # push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/pathpresenterresearch/python-docker']
+
+  # Deploy container image to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['beta', 'run', 'deploy', 'python-cloudrun-service', '--image', 'gcr.io/pathpresenterresearch/python-docker', '--region', 'us-central1', '--port', '5000', '--platform', 'managed',--allow-unauthenticated]
