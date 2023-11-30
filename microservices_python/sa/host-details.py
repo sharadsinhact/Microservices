@@ -3,7 +3,7 @@ import socket
 
 
 app = Flask(__name__)
-@app.route("/python")
+@app.route("/")
 def get_hostname_ip():
     
      try: 
